@@ -50,7 +50,7 @@ function App() {
 
             {/* Perfil protegido */}
             <Route
-              path="/profile"
+              path="/:username"
               element={
                 <AuthRoute>
                   <ProfilePage />

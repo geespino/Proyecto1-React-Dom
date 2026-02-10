@@ -16,7 +16,7 @@ function AuthProvider({ children }) {
     setUser({ username, isAdmin });
 
     // Recuperamos la ruta original desde el state
-    let from = location.state?.from?.pathname || '/';
+    let from = location.state?.from?.pathname || `/${username}`;
     navigate(from, { replace: true });
   };
   
