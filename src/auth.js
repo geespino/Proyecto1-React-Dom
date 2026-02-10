@@ -39,7 +39,12 @@ function useAuth() {
   return auth;
 }
 
-function AuthRoute(props) {
+/**
+ * AuthRoute protege rutas y puede verificar roles.
+ * - Si no hay usuario, redirige a login guardando la ruta original.
+ * - Si se pasa requiredRole="admin", solo permite acceso a administradores.
+ */
+function AuthRoute({ children, requiredRole }) {
   const auth = useAuth();
   const location = useLocation();
 
@@ -48,7 +53,11 @@ function AuthRoute(props) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  return props.children;
+  if (requiredRole === "admin" && !auth.user.isAdmin) {
+    return <p>No tienes permisos para acceder a esta sección.</p>;
+  }
+
+  return children;
 }
 
 export {
@@ -56,3 +65,4 @@ export {
   AuthRoute,
   useAuth,
 };
+
