@@ -1,5 +1,6 @@
+// auth.js
 import React from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 
 const adminList = ['Irisval', 'RetaxMaster', 'freddier'];
 
@@ -7,12 +8,16 @@ const AuthContext = React.createContext();
 
 function AuthProvider({ children }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [user, setUser] = React.useState(null);
 
   const login = ({ username }) => {
-    const isAdmin = adminList.find(admin => admin === username);
+    const isAdmin = adminList.includes(username);
     setUser({ username, isAdmin });
-    navigate('/profile');
+
+    // Recuperamos la ruta original desde el state
+    let from = location.state?.from?.pathname || '/';
+    navigate(from, { replace: true });
   };
   
   const logout = () => {
@@ -36,9 +41,11 @@ function useAuth() {
 
 function AuthRoute(props) {
   const auth = useAuth();
+  const location = useLocation();
 
   if (!auth.user) {
-    return <Navigate to="/login" />;
+    // Guardamos la ruta original en state
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   return props.children;
